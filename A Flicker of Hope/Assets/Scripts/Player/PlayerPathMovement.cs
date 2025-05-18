@@ -9,6 +9,7 @@ public class PlayerPathMovement : MonoBehaviour
     [SerializeField] private float currentDistanceAlongPath = 0f;
 
     private float currentMoveInput = 0f;
+    private Vector3 lastLookDirection;
 
     void Start()
     {
@@ -32,7 +33,16 @@ public class PlayerPathMovement : MonoBehaviour
             if (!float.IsNaN(initialDirection.x) && initialDirection != Vector3.zero)
             {
                 transform.forward = initialDirection;
+                lastLookDirection = initialDirection;
             }
+            else
+            {
+                lastLookDirection = transform.forward;
+            }
+        }
+        else
+        {
+            lastLookDirection = transform.forward;
         }
     }
 
@@ -62,11 +72,25 @@ public class PlayerPathMovement : MonoBehaviour
 
         if (pathManager.GetNodeCount() >= 1)
         {
-            Vector3 pathDirection = pathManager.GetDirectionAtDistance(currentDistanceAlongPath);
-            if (!float.IsNaN(pathDirection.x) && pathDirection != Vector3.zero)
+            Vector3 pathSegmentDirection = pathManager.GetDirectionAtDistance(currentDistanceAlongPath);
+            if (!float.IsNaN(pathSegmentDirection.x) && pathSegmentDirection != Vector3.zero)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(pathDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                if (currentMoveInput < -0.01f)
+                {
+                    lastLookDirection = -pathSegmentDirection;
+                }
+                else if (currentMoveInput > 0.01f)
+                {
+                    lastLookDirection = pathSegmentDirection;
+                }
+                // If currentMoveInput is near zero, lastLookDirection remains as it was,
+                // allowing the player to maintain orientation when stopping.
+
+                if (lastLookDirection != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(lastLookDirection);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                }
             }
         }
     }
@@ -92,6 +116,7 @@ public class PlayerPathMovement : MonoBehaviour
             if (!float.IsNaN(snapDirection.x) && snapDirection != Vector3.zero)
             {
                 transform.forward = snapDirection;
+                lastLookDirection = snapDirection;
             }
         }
     }
