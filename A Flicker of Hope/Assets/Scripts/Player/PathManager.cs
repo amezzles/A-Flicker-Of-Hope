@@ -91,6 +91,13 @@ public class PathManager : MonoBehaviour
             if (nodes[i] == null || nodes[i + 1] == null) { continue; }
             Gizmos.DrawLine(nodes[i].position, nodes[i + 1].position);
         }
+
+        Gizmos.color = Color.blue;
+        foreach (var node in nodes)
+        {
+            if (node == null) { continue; }
+            Gizmos.DrawSphere(node.position, 0.2f);
+        }
     }
 
     public float GetTotalPathLength()
