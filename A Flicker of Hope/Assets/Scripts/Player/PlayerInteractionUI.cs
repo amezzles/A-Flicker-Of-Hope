@@ -8,18 +8,16 @@ public class PlayerInteractionUI : MonoBehaviour
     [SerializeField] private GameObject _promptPanel;
     [SerializeField] private Image _buttonPromptImage;
     [SerializeField] private Sprite _buttonSprite;
-    [SerializeField] private Sprite _pressedButtonSprite;
 
     [SerializeField] private Vector2 _screenOffset = new Vector2(0, 50);
     private RectTransform _panelRectTransform;
 
     private GameObject _currentTargetObject;
     private PlayerInteract _playerInteract;
+    private bool _interactionEnabled = true;
 
     public Canvas interactionCanvas;
     public Camera playerCamera;
-
-    private Coroutine _interactionFeedbackCoroutine;
 
     void Awake()
     {
@@ -32,7 +30,6 @@ public class PlayerInteractionUI : MonoBehaviour
         if (_promptPanel != null) _panelRectTransform = _promptPanel.GetComponent<RectTransform>();
 
         HideAllPrompts();
-        ResetButtonImageToNormalState();
     }
 
     void OnEnable()
@@ -54,37 +51,23 @@ public class PlayerInteractionUI : MonoBehaviour
                 _playerInteract.OnInteractWithTarget -= HandleSuccessfulInteraction;
             }
         }
-
-        if (_interactionFeedbackCoroutine != null)
-        {
-            StopCoroutine(_interactionFeedbackCoroutine);
-            _interactionFeedbackCoroutine = null;
-        }
     }
 
     private void HandleTargetChanged(GameObject newTarget)
     {
         _currentTargetObject = newTarget;
-        if (_interactionFeedbackCoroutine != null)
-        {
-            StopCoroutine(_interactionFeedbackCoroutine);
-            _interactionFeedbackCoroutine = null;
-        }
         UpdatePromptsVisibilityAndPosition();
     }
 
     private void HandleSuccessfulInteraction(GameObject interactedObject)
     {
-        if (_interactionFeedbackCoroutine != null)
-        {
-            StopCoroutine(_interactionFeedbackCoroutine);
-        }
-        _interactionFeedbackCoroutine = StartCoroutine(ProcessInteractionFeedbackCoroutine());
+        _interactionEnabled = false;
+        HideAllPrompts();
     }
 
     void Update()
     {
-        if (_currentTargetObject != null && _promptPanel != null && _promptPanel.activeSelf && _interactionFeedbackCoroutine == null)
+        if (_currentTargetObject != null && _promptPanel != null && _promptPanel.activeSelf && _interactionEnabled)
         {
             PositionPromptPanel();
         }
@@ -92,20 +75,12 @@ public class PlayerInteractionUI : MonoBehaviour
 
     private void PositionPromptPanel()
     {
-        if (playerCamera == null || _currentTargetObject == null || _panelRectTransform == null)
-        {
-            if (_interactionFeedbackCoroutine == null) HideAllPrompts();
-            return;
-        }
+        if (playerCamera == null || _currentTargetObject == null || _panelRectTransform == null) { return; }
 
         Vector3 worldPos = _currentTargetObject.transform.position;
         var screenPos = playerCamera.WorldToScreenPoint(worldPos);
 
-        if (screenPos.z <= 0)
-        {
-            if (_interactionFeedbackCoroutine == null) HideAllPrompts();
-            return;
-        }
+        if (screenPos.z <= 0) { return; }
 
         if (interactionCanvas == null) return;
         var canvasRect = interactionCanvas.transform as RectTransform;
@@ -123,11 +98,8 @@ public class PlayerInteractionUI : MonoBehaviour
 
     private void UpdatePromptsVisibilityAndPosition()
     {
-        if (_interactionFeedbackCoroutine != null) return;
-
         if (_currentTargetObject != null)
         {
-            ResetButtonImageToNormalState();
             if (_buttonPromptImage != null) _buttonPromptImage.gameObject.SetActive(true);
             if (_promptPanel != null) _promptPanel.SetActive(true);
             if (_promptTextObject != null) _promptTextObject.SetActive(true);
@@ -144,37 +116,5 @@ public class PlayerInteractionUI : MonoBehaviour
         if (_promptPanel != null) _promptPanel.SetActive(false);
         if (_promptTextObject != null) _promptTextObject.SetActive(false);
         if (_buttonPromptImage != null) _buttonPromptImage.gameObject.SetActive(false);
-    }
-
-    private IEnumerator ProcessInteractionFeedbackCoroutine()
-    {
-        if (_buttonPromptImage != null && _pressedButtonSprite != null)
-        {
-            _buttonPromptImage.sprite = _pressedButtonSprite;
-
-            if (_promptPanel != null) _promptPanel.SetActive(true);
-            _buttonPromptImage.gameObject.SetActive(true);
-
-            if (_promptTextObject != null) _promptTextObject.SetActive(false);
-
-            if (_currentTargetObject != null)
-            {
-                PositionPromptPanel();
-            }
-        }
-
-        yield return new WaitForSeconds(1f);
-
-        HideAllPrompts();
-        ResetButtonImageToNormalState();
-        _interactionFeedbackCoroutine = null;
-    }
-
-    private void ResetButtonImageToNormalState()
-    {
-        if (_buttonPromptImage != null && _buttonSprite != null)
-        {
-            _buttonPromptImage.sprite = _buttonSprite;
-        }
     }
 }

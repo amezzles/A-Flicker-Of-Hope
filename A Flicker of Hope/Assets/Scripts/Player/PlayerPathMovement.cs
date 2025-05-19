@@ -11,6 +11,9 @@ public class PlayerPathMovement : MonoBehaviour
     private float currentMoveInput = 0f;
     private Vector3 lastLookDirection;
 
+    public bool _movementEnabled = true;
+    private bool _orientToPath = true;
+
     void Start()
     {
         if (pathManager == null || pathManager.GetNodeCount() == 0)
@@ -48,6 +51,7 @@ public class PlayerPathMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!_movementEnabled) { return; }
         Vector2 inputVector = context.ReadValue<Vector2>();
         currentMoveInput = inputVector.y;
     }
@@ -70,7 +74,7 @@ public class PlayerPathMovement : MonoBehaviour
         }
         transform.position = targetPosition;
 
-        if (pathManager.GetNodeCount() >= 1)
+        if (pathManager.GetNodeCount() >= 1 && _orientToPath)
         {
             Vector3 pathSegmentDirection = pathManager.GetDirectionAtDistance(currentDistanceAlongPath);
             if (!float.IsNaN(pathSegmentDirection.x) && pathSegmentDirection != Vector3.zero)
@@ -83,8 +87,6 @@ public class PlayerPathMovement : MonoBehaviour
                 {
                     lastLookDirection = pathSegmentDirection;
                 }
-                // If currentMoveInput is near zero, lastLookDirection remains as it was,
-                // allowing the player to maintain orientation when stopping.
 
                 if (lastLookDirection != Vector3.zero)
                 {
@@ -98,6 +100,7 @@ public class PlayerPathMovement : MonoBehaviour
     public void SnapToNode(int nodeIndex)
     {
         if (pathManager == null) { return; }
+        _orientToPath = false;
 
         int nodeCount = pathManager.GetNodeCount();
         if (nodeIndex < 0 || nodeIndex >= nodeCount) { return; }
@@ -119,5 +122,10 @@ public class PlayerPathMovement : MonoBehaviour
                 lastLookDirection = snapDirection;
             }
         }
+    }
+
+    public void EnableOrientation()
+    {
+        _orientToPath = true;
     }
 }

@@ -9,8 +9,9 @@ public class PlayerInteract : MonoBehaviour
     private PlayerPathMovement _playerPathMovement;
     private Camera _mainCamera;
     private Coroutine _cameraMoveCoroutine;
+    private bool _interactionEnabled = true;
 
-    public float cameraMoveDuration = 1.0f;
+    [SerializeField] private float cameraMoveDuration = 1.0f;
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -52,7 +53,7 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed && _currentTargetObject != null)
+        if (context.performed && _currentTargetObject != null && _interactionEnabled)
         {
             InteractWithTarget(_currentTargetObject);
         }
@@ -61,6 +62,7 @@ public class PlayerInteract : MonoBehaviour
     private void InteractWithTarget(GameObject target)
     {
         OnInteractWithTarget?.Invoke(target);
+        InputEnabled(false);
 
         Interactable targetInteractable = target.GetComponent<Interactable>();
         if (targetInteractable == null || _mainCamera == null) return;
@@ -86,6 +88,12 @@ public class PlayerInteract : MonoBehaviour
         _cameraMoveCoroutine = StartCoroutine(MoveCameraToTarget(targetInteractable));
     }
 
+    private void EndInteraction()
+    {
+        
+        
+    }
+
     private IEnumerator MoveCameraToTarget(Interactable interactable)
     {
         if (interactable.interactionCameraTransform == null) yield break;
@@ -109,5 +117,11 @@ public class PlayerInteract : MonoBehaviour
         _mainCamera.transform.rotation = targetCamTransform.rotation;
 
         _cameraMoveCoroutine = null;
+    }
+
+    private void InputEnabled(bool enabled)
+    {
+        _playerPathMovement._movementEnabled = enabled;
+        _interactionEnabled = enabled;
     }
 }
