@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerPathMovement : MonoBehaviour
 {
     [SerializeField] private PathManager pathManager;
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float rotationSpeed = 1f;
     [SerializeField] private float currentDistanceAlongPath = 0f;
 
     private float currentMoveInput = 0f;
