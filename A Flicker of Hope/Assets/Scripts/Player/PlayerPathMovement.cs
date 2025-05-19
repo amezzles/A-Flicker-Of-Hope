@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerPathMovement : MonoBehaviour
 {
@@ -7,12 +8,17 @@ public class PlayerPathMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float rotationSpeed = 1f;
     [SerializeField] private float currentDistanceAlongPath = 0f;
+    [SerializeField] private float snapToNodeDuration = 0.5f;
 
     private float currentMoveInput = 0f;
     private Vector3 lastLookDirection;
+    private Coroutine _snapToNodeCoroutine;
 
     public bool _movementEnabled = true;
     private bool _orientToPath = true;
+
+    public bool IsSnapping => _snapToNodeCoroutine != null;
+
 
     void Start()
     {
@@ -97,31 +103,73 @@ public class PlayerPathMovement : MonoBehaviour
         }
     }
 
-    public void SnapToNode(int nodeIndex)
+    private IEnumerator SnapToNodeCoroutine(int nodeIndex)
     {
-        if (pathManager == null) { return; }
         _orientToPath = false;
 
         int nodeCount = pathManager.GetNodeCount();
-        if (nodeIndex < 0 || nodeIndex >= nodeCount) { return; }
-
         float distanceAtNode = pathManager.GetDistanceAtNode(nodeIndex);
-        if (float.IsNaN(distanceAtNode)) { return; }
-        currentDistanceAlongPath = distanceAtNode;
 
-        Vector3 snapPosition = pathManager.GetPointAtDistance(currentDistanceAlongPath);
-        if (float.IsNaN(snapPosition.x)) { return; }
-        transform.position = snapPosition;
-
-        if (nodeCount >= 1)
+        if (float.IsNaN(distanceAtNode))
         {
-            Vector3 snapDirection = pathManager.GetDirectionAtDistance(currentDistanceAlongPath);
+            Debug.LogError($"Could not get valid distance for nodeIndex: {nodeIndex}", this);
+            _orientToPath = true;
+            yield break;
+        }
+
+        Vector3 targetPosition = pathManager.GetPointAtDistance(distanceAtNode);
+        if (float.IsNaN(targetPosition.x))
+        {
+            Debug.LogError($"Could not get valid point at distance for nodeIndex: {nodeIndex}", this);
+            _orientToPath = true;
+            yield break;
+        }
+
+        Quaternion targetRotation = transform.rotation;
+        Vector3 snapDirection = Vector3.zero;
+
+        if (nodeCount > 0)
+        {
+            snapDirection = pathManager.GetDirectionAtDistance(distanceAtNode);
             if (!float.IsNaN(snapDirection.x) && snapDirection != Vector3.zero)
             {
-                transform.forward = snapDirection;
-                lastLookDirection = snapDirection;
+                targetRotation = Quaternion.LookRotation(snapDirection);
             }
         }
+
+        Vector3 startPosition = transform.position;
+        Quaternion startRotation = transform.rotation;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < snapToNodeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / snapToNodeDuration);
+
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+        transform.rotation = targetRotation;
+
+        currentDistanceAlongPath = distanceAtNode;
+        if (snapDirection != Vector3.zero)
+        {
+            lastLookDirection = snapDirection;
+        }
+        _snapToNodeCoroutine = null;
+    }
+
+    public void SnapToNode(int nodeIndex)
+    {
+        if (_snapToNodeCoroutine != null)
+        {
+            StopCoroutine(_snapToNodeCoroutine);
+        }
+        _snapToNodeCoroutine = StartCoroutine(SnapToNodeCoroutine(nodeIndex));
     }
 
     public void EnableOrientation()
