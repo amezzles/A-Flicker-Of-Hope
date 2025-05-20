@@ -18,7 +18,10 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private float _cameraMoveDuration = 1.0f;
     [SerializeField] private float _playerLookAtTargetDuration = 0.25f;
     [SerializeField] private GameObject _healingParticles;
+<<<<<<< Updated upstream
     [SerializeField] private float _postHealInputDisableDuration = 1.0f;
+=======
+>>>>>>> Stashed changes
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -61,9 +64,10 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Interactable") && other.gameObject == _currentTargetObject)
+        Interactable interactable = other.GetComponent<Interactable>();
+        if (interactable != null && !interactable.isHealed)
         {
-            CurrentTargetObject = null;
+            CurrentTargetObject = other.gameObject;
         }
     }
 
