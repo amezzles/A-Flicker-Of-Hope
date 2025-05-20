@@ -1,8 +1,11 @@
 using UnityEngine;
+using TMPro;
 
 public class Interactable : MonoBehaviour
 {
-    [SerializeField] public Transform interactionCameraTransform;
-    [SerializeField] public Transform lookAtTarget;
-    [SerializeField] public int interactionNodeIndex;
+    public Transform interactionCameraTransform;
+    public Transform lookAtTarget;
+    public int interactionNodeIndex;
+    public string dialogue;
+    public bool isHealed = false;
 }
