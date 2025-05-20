@@ -1,20 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using TMPro;
 
 public class PlayerInteractionUI : MonoBehaviour
 {
-    [SerializeField] private GameObject _promptTextObject;
+    [SerializeField] private TextMeshProUGUI _promptTextObject;
     [SerializeField] private GameObject _promptPanel;
     [SerializeField] private Image _buttonPromptImage;
-    [SerializeField] private Sprite _buttonSprite;
 
     [SerializeField] private Vector2 _screenOffset = new Vector2(0, 50);
+    [SerializeField] private Vector2 _dialogueButtonOffset = new Vector2(0, 200);
     private RectTransform _panelRectTransform;
+    private RectTransform _buttonPromptRectTransform;
+    private Vector2 _originalButtonPromptAnchoredPosition;
 
     private GameObject _currentTargetObject;
     private PlayerInteract _playerInteract;
     private bool _interactionEnabled = true;
+    private bool _isShowingDialogue = false;
 
     public Canvas interactionCanvas;
     public Camera playerCamera;
@@ -27,8 +30,24 @@ public class PlayerInteractionUI : MonoBehaviour
             enabled = false;
             return;
         }
-        if (_promptPanel != null) _panelRectTransform = _promptPanel.GetComponent<RectTransform>();
+        if (_promptPanel != null)
+        {
+            _panelRectTransform = _promptPanel.GetComponent<RectTransform>();
+        }
+        else
+        {
+            enabled = false;
+            return;
+        }
 
+        if (_buttonPromptImage != null)
+        {
+            _buttonPromptRectTransform = _buttonPromptImage.GetComponent<RectTransform>();
+            if (_buttonPromptRectTransform != null)
+            {
+                _originalButtonPromptAnchoredPosition = _buttonPromptRectTransform.anchoredPosition;
+            }
+        }
         HideAllPrompts();
     }
 
@@ -38,6 +57,7 @@ public class PlayerInteractionUI : MonoBehaviour
         {
             _playerInteract.OnCurrentTargetChanged += HandleTargetChanged;
             _playerInteract.OnInteractWithTarget += HandleSuccessfulInteraction;
+            _playerInteract.OnInteractionEnded += HandleInteractionEnded;
         }
     }
 
@@ -46,41 +66,84 @@ public class PlayerInteractionUI : MonoBehaviour
         if (_playerInteract != null)
         {
             _playerInteract.OnCurrentTargetChanged -= HandleTargetChanged;
-            if (_playerInteract != null)
-            {
-                _playerInteract.OnInteractWithTarget -= HandleSuccessfulInteraction;
-            }
+            _playerInteract.OnInteractWithTarget -= HandleSuccessfulInteraction;
+            _playerInteract.OnInteractionEnded -= HandleInteractionEnded;
         }
     }
 
     private void HandleTargetChanged(GameObject newTarget)
     {
         _currentTargetObject = newTarget;
-        UpdatePromptsVisibilityAndPosition();
+        if (!_isShowingDialogue)
+        {
+            UpdatePromptsVisibilityAndPosition();
+        }
     }
 
     private void HandleSuccessfulInteraction(GameObject interactedObject)
     {
         _interactionEnabled = false;
-        HideAllPrompts();
+        if (_buttonPromptImage != null)
+        {
+            _buttonPromptImage.enabled = false;
+        }
+    }
+
+    private void HandleInteractionEnded()
+    {
+        _isShowingDialogue = false;
+        _interactionEnabled = true;
+
+        if (_buttonPromptRectTransform != null)
+        {
+            _buttonPromptRectTransform.anchoredPosition = _originalButtonPromptAnchoredPosition;
+        }
+        UpdatePromptsVisibilityAndPosition();
     }
 
     void Update()
     {
-        if (_currentTargetObject != null && _promptPanel != null && _promptPanel.activeSelf && _interactionEnabled)
+        if (_currentTargetObject == null)
         {
-            PositionPromptPanel();
+            if (_isShowingDialogue && _promptPanel != null && _promptPanel.activeSelf)
+            {
+                _isShowingDialogue = false;
+                HideAllPrompts();
+            }
+            return;
+        }
+
+        if (_promptPanel != null)
+        {
+            bool shouldPanelBeActive = _isShowingDialogue || (_interactionEnabled && _promptPanel.activeSelf);
+            if (shouldPanelBeActive)
+            {
+                if (!_promptPanel.activeSelf) _promptPanel.SetActive(true);
+                PositionPromptPanel();
+            }
         }
     }
 
     private void PositionPromptPanel()
     {
-        if (playerCamera == null || _currentTargetObject == null || _panelRectTransform == null) { return; }
+        if (playerCamera == null || _currentTargetObject == null || _panelRectTransform == null || _promptPanel == null) return;
+        if (!_promptPanel.activeSelf) return;
 
-        Vector3 worldPos = _currentTargetObject.transform.position;
+        Transform positionReference = _currentTargetObject.transform;
+        if (_isShowingDialogue) {
+            Interactable interactable = _currentTargetObject.GetComponent<Interactable>();
+            if (interactable != null && interactable.lookAtTarget != null) {
+                positionReference = interactable.lookAtTarget;
+            }
+        }
+
+        Vector3 worldPos = positionReference.position;
         var screenPos = playerCamera.WorldToScreenPoint(worldPos);
 
-        if (screenPos.z <= 0) { return; }
+        if (screenPos.z <= 0) {
+            _promptPanel.SetActive(false);
+            return;
+        }
 
         if (interactionCanvas == null) return;
         var canvasRect = interactionCanvas.transform as RectTransform;
@@ -98,11 +161,25 @@ public class PlayerInteractionUI : MonoBehaviour
 
     private void UpdatePromptsVisibilityAndPosition()
     {
-        if (_currentTargetObject != null)
+        if (_isShowingDialogue) return;
+
+        if (_currentTargetObject != null && _interactionEnabled)
         {
-            if (_buttonPromptImage != null) _buttonPromptImage.gameObject.SetActive(true);
             if (_promptPanel != null) _promptPanel.SetActive(true);
-            if (_promptTextObject != null) _promptTextObject.SetActive(true);
+
+            if (_buttonPromptImage != null)
+            {
+                _buttonPromptImage.enabled = true;
+                _buttonPromptImage.gameObject.SetActive(true);
+                if (_buttonPromptRectTransform != null)
+                {
+                    _buttonPromptRectTransform.anchoredPosition = _originalButtonPromptAnchoredPosition;
+                }
+            }
+            if (_promptTextObject != null)
+            {
+                _promptTextObject.gameObject.SetActive(false);
+            }
             PositionPromptPanel();
         }
         else
@@ -114,7 +191,50 @@ public class PlayerInteractionUI : MonoBehaviour
     private void HideAllPrompts()
     {
         if (_promptPanel != null) _promptPanel.SetActive(false);
-        if (_promptTextObject != null) _promptTextObject.SetActive(false);
-        if (_buttonPromptImage != null) _buttonPromptImage.gameObject.SetActive(false);
+        if (_buttonPromptRectTransform != null)
+        {
+            _buttonPromptRectTransform.anchoredPosition = _originalButtonPromptAnchoredPosition;
+        }
+        if (_buttonPromptImage != null)
+        {
+            _buttonPromptImage.enabled = false;
+        }
+        if (_promptTextObject != null && (_promptPanel == null || !_promptTextObject.transform.IsChildOf(_promptPanel.transform)))
+        {
+            _promptTextObject.gameObject.SetActive(false);
+        }
+    }
+
+    public void ShowDialogue(string dialogue)
+    {
+        _isShowingDialogue = true;
+        _interactionEnabled = false;
+
+        if (_promptPanel != null)
+        {
+            _promptPanel.SetActive(true);
+        }
+        else
+        {
+            _isShowingDialogue = false;
+            return;
+        }
+
+        if (_buttonPromptImage != null)
+        {
+            _buttonPromptImage.enabled = false;
+            _buttonPromptImage.gameObject.SetActive(true);
+            if (_buttonPromptRectTransform != null)
+            {
+                _buttonPromptRectTransform.anchoredPosition = _dialogueButtonOffset;
+            }
+        }
+
+        if (_promptTextObject != null)
+        {
+            _promptTextObject.text = dialogue;
+            _promptTextObject.gameObject.SetActive(true);
+        }
+        PositionPromptPanel();
     }
 }

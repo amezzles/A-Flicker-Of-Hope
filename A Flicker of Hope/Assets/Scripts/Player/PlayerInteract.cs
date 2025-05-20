@@ -7,6 +7,7 @@ public class PlayerInteract : MonoBehaviour
 {
     private GameObject _currentTargetObject;
     private PlayerPathMovement _playerPathMovement;
+    private PlayerInteractionUI _playerInteractionUI;
     private Camera _mainCamera;
     private Coroutine _cameraMoveCoroutine;
     private Coroutine _interactionSequenceCoroutine;
@@ -23,7 +24,6 @@ public class PlayerInteract : MonoBehaviour
     private Transform _originalCameraParent;
     private Vector3 _originalCameraLocalPosition;
     private Quaternion _originalCameraLocalRotation;
-
 
     public GameObject CurrentTargetObject
     {
@@ -43,6 +43,7 @@ public class PlayerInteract : MonoBehaviour
     private void Awake()
     {
         _playerPathMovement = GetComponent<PlayerPathMovement>();
+        _playerInteractionUI = GetComponent<PlayerInteractionUI>();
         _mainCamera = Camera.main;
     }
 
@@ -64,17 +65,24 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed && _currentTargetObject != null && _interactionEnabled && !_isInteracting)
+        if (context.performed)
         {
-            if (_interactionSequenceCoroutine != null)
+            if (_currentTargetObject != null && _interactionEnabled && !_isInteracting)
             {
-                StopCoroutine(_interactionSequenceCoroutine);
-                if (_cameraMoveCoroutine != null) StopCoroutine(_cameraMoveCoroutine);
-                RestoreCameraParenting();
-                InputEnabled(true);
-                if (_playerPathMovement != null) _playerPathMovement.EnableOrientation();
+                if (_interactionSequenceCoroutine != null)
+                {
+                    StopCoroutine(_interactionSequenceCoroutine);
+                    if (_cameraMoveCoroutine != null) StopCoroutine(_cameraMoveCoroutine);
+                    RestoreCameraParenting();
+                    InputEnabled(true);
+                    if (_playerPathMovement != null) _playerPathMovement.EnableOrientation();
+                }
+                _interactionSequenceCoroutine = StartCoroutine(InteractionSequenceCoroutine(_currentTargetObject));
             }
-            _interactionSequenceCoroutine = StartCoroutine(InteractionSequenceCoroutine(_currentTargetObject));
+            else if (_isInteracting)
+            {
+                TriggerEndInteraction();
+            }
         }
     }
 
@@ -84,13 +92,12 @@ public class PlayerInteract : MonoBehaviour
         OnInteractWithTarget?.Invoke(target);
         InputEnabled(false);
 
-        // Detach camera
         if (_mainCamera != null)
         {
             _originalCameraParent = _mainCamera.transform.parent;
             _originalCameraLocalPosition = _mainCamera.transform.localPosition;
             _originalCameraLocalRotation = _mainCamera.transform.localRotation;
-            _mainCamera.transform.SetParent(null, true); // true to keep world position
+            _mainCamera.transform.SetParent(null, true);
         }
 
         Interactable targetInteractable = target.GetComponent<Interactable>();
@@ -137,11 +144,17 @@ public class PlayerInteract : MonoBehaviour
             StopCoroutine(_cameraMoveCoroutine);
         }
         _cameraMoveCoroutine = StartCoroutine(MoveCameraToTarget(targetInteractable));
+        
         if (_cameraMoveCoroutine != null)
         {
             yield return _cameraMoveCoroutine;
         }
-
+        
+        if (_playerInteractionUI != null)
+        {
+            _playerInteractionUI.ShowDialogue(targetInteractable.dialogue);
+        }
+        
         _interactionSequenceCoroutine = null;
     }
 
@@ -177,17 +190,25 @@ public class PlayerInteract : MonoBehaviour
 
     private void RestoreCameraParenting()
     {
-        if (_mainCamera != null)
+        if (_mainCamera != null && _originalCameraParent != null)
         {
             _mainCamera.transform.SetParent(_originalCameraParent, false);
             _mainCamera.transform.localPosition = _originalCameraLocalPosition;
             _mainCamera.transform.localRotation = _originalCameraLocalRotation;
         }
+        else if (_mainCamera != null && _originalCameraParent == null) // Case where camera started with no parent
+        {
+             _mainCamera.transform.SetParent(null, false); // Ensure it's unparented if it started that way
+             // Or if you always want it to reparent to something default, handle that here.
+             // For now, this just sets it to its original state (potentially unparented).
+             _mainCamera.transform.localPosition = _originalCameraLocalPosition;
+             _mainCamera.transform.localRotation = _originalCameraLocalRotation;
+        }
     }
 
     private IEnumerator MoveCameraToTarget(Interactable interactable)
     {
-        if (interactable.interactionCameraTransform == null)
+        if (interactable.interactionCameraTransform == null || _mainCamera == null)
         {
             _cameraMoveCoroutine = null;
             yield break;
@@ -196,7 +217,6 @@ public class PlayerInteract : MonoBehaviour
         Transform targetCamTransform = interactable.interactionCameraTransform;
         Vector3 startPosition = _mainCamera.transform.position;
         Quaternion startRotation = _mainCamera.transform.rotation;
-
         float elapsedTime = 0f;
 
         while (elapsedTime < cameraMoveDuration)
@@ -210,7 +230,6 @@ public class PlayerInteract : MonoBehaviour
 
         _mainCamera.transform.position = targetCamTransform.position;
         _mainCamera.transform.rotation = targetCamTransform.rotation;
-
         _cameraMoveCoroutine = null;
     }
 
