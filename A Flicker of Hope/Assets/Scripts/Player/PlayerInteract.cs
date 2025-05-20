@@ -61,10 +61,9 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Interactable interactable = other.GetComponent<Interactable>();
-        if (interactable != null && !interactable.isHealed)
+        if (CurrentTargetObject == other.gameObject)
         {
-            CurrentTargetObject = other.gameObject;
+            CurrentTargetObject = null;
         }
     }
 
@@ -82,10 +81,8 @@ public class PlayerInteract : MonoBehaviour
                     if (_interactionSequenceCoroutine != null)
                     {
                         StopCoroutine(_interactionSequenceCoroutine);
-                        _interactionSequenceCoroutine = null;
                     }
                     _interactionSequenceCoroutine = StartCoroutine(HealAndEndSequence(targetInteractable));
-                    _nextInteractionIsHealing = false;
                 }
                 else if (!_isInteracting && !targetInteractable.isHealed)
                 {
@@ -95,10 +92,6 @@ public class PlayerInteract : MonoBehaviour
                     }
                     _interactionSequenceCoroutine = StartCoroutine(InteractionSequenceCoroutine(targetInteractable));
                 }
-            }
-            else if (_isInteracting)
-            {
-                TriggerEndInteraction();
             }
         }
     }
@@ -135,8 +128,6 @@ public class PlayerInteract : MonoBehaviour
             }
         }
 
-        // Moving player and camera
-
         Vector3 directionToTarget = target.transform.position - transform.position;
         directionToTarget.y = 0f;
 
@@ -170,8 +161,6 @@ public class PlayerInteract : MonoBehaviour
             yield return _cameraMoveCoroutine;
         }
 
-        // Dialogue Scrolling
-
         if (_playerInteractionUI != null)
         {
             _playerInteractionUI.ShowDialogue(targetInteractable.dialogue);
@@ -179,19 +168,41 @@ public class PlayerInteract : MonoBehaviour
             {
                 yield return null;
             }
-            _nextInteractionIsHealing = true;
+
+            if (_currentTargetObject == targetInteractable.gameObject && !targetInteractable.isHealed)
+            {
+                _nextInteractionIsHealing = true;
+                _interactionEnabled = true;
+                if (_playerPathMovement != null) _playerPathMovement._movementEnabled = false;
+            }
+            else
+            {
+                TriggerEndInteraction();
+                yield break;
+            }
         }
-        _interactionSequenceCoroutine = null;
+        else
+        {
+            TriggerEndInteraction();
+            yield break;
+        }
     }
 
     private IEnumerator HealAndEndSequence(Interactable targetToHeal)
     {
-        _isInteracting = true;
+        _nextInteractionIsHealing = false;
+        InputEnabled(false);
+
         if (_healingParticles != null)
         {
             Instantiate(_healingParticles, targetToHeal.transform.position, Quaternion.identity);
         }
         targetToHeal.isHealed = true;
+
+        if (CurrentTargetObject == targetToHeal.gameObject)
+        {
+            CurrentTargetObject = null;
+        }
 
         yield return new WaitForSeconds(_postHealInputDisableDuration);
 
@@ -225,6 +236,7 @@ public class PlayerInteract : MonoBehaviour
             _playerPathMovement.EnableOrientation();
         }
         _isInteracting = false;
+        _nextInteractionIsHealing = false;
         OnInteractionEnded?.Invoke();
     }
 
@@ -238,9 +250,9 @@ public class PlayerInteract : MonoBehaviour
         }
         else if (_mainCamera != null && _originalCameraParent == null)
         {
-             _mainCamera.transform.SetParent(null, false);
-             _mainCamera.transform.localPosition = _originalCameraLocalPosition;
-             _mainCamera.transform.localRotation = _originalCameraLocalRotation;
+            _mainCamera.transform.SetParent(null, false);
+            _mainCamera.transform.localPosition = _originalCameraLocalPosition;
+            _mainCamera.transform.localRotation = _originalCameraLocalRotation;
         }
     }
 
@@ -269,12 +281,6 @@ public class PlayerInteract : MonoBehaviour
         _mainCamera.transform.position = targetCamTransform.position;
         _mainCamera.transform.rotation = targetCamTransform.rotation;
         _cameraMoveCoroutine = null;
-    }
-
-    private IEnumerator HealInteractionTarget(Interactable interactable)
-    {
-        if (interactable == null) yield break;
-        
     }
 
     private void InputEnabled(bool enabled)

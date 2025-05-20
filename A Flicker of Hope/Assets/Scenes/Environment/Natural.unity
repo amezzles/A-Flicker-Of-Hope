@@ -1528,6 +1528,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1880819054}
     - target: {fileID: 6801290919645344538, guid: b1da8c6adcdd86d4087f5a58f2f889e1, type: 3}
+      propertyPath: _healingParticles
+      value: 
+      objectReference: {fileID: 3131333411852694374, guid: cdd2e1b15edef18409e291c67be77d47, type: 3}
+    - target: {fileID: 6801290919645344538, guid: b1da8c6adcdd86d4087f5a58f2f889e1, type: 3}
       propertyPath: cameraMoveDuration
       value: 2
       objectReference: {fileID: 0}
