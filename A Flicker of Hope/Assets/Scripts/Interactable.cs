@@ -7,4 +7,5 @@ public class Interactable : MonoBehaviour
     public Transform lookAtTarget;
     public int interactionNodeIndex;
     public string dialogue;
+    public bool isHealed = false;
 }

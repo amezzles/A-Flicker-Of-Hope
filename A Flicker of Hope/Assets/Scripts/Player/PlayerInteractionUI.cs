@@ -205,6 +205,11 @@ public class PlayerInteractionUI : MonoBehaviour
         }
     }
 
+    public bool IsTextCurrentlyScrolling()
+    {
+        return _currentScrollingCoroutine != null;
+    }
+
     public void ShowDialogue(string dialogue)
     {
         _isShowingDialogue = true;

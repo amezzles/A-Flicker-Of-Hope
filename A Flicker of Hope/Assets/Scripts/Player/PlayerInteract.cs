@@ -13,9 +13,12 @@ public class PlayerInteract : MonoBehaviour
     private Coroutine _interactionSequenceCoroutine;
     private bool _interactionEnabled = true;
     private bool _isInteracting = false;
+    private bool _nextInteractionIsHealing = false;
 
-    [SerializeField] private float cameraMoveDuration = 1.0f;
-    [SerializeField] private float playerLookAtTargetDuration = 0.25f;
+    [SerializeField] private float _cameraMoveDuration = 1.0f;
+    [SerializeField] private float _playerLookAtTargetDuration = 0.25f;
+    [SerializeField] private GameObject _healingParticles;
+    [SerializeField] private float _postHealInputDisableDuration = 1.0f;
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -49,7 +52,8 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Interactable"))
+        Interactable interactable = other.GetComponent<Interactable>();
+        if (interactable != null && !interactable.isHealed)
         {
             CurrentTargetObject = other.gameObject;
         }
@@ -65,19 +69,31 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && _interactionEnabled)
         {
-            if (_currentTargetObject != null && _interactionEnabled && !_isInteracting)
+            if (_currentTargetObject != null)
             {
-                if (_interactionSequenceCoroutine != null)
+                Interactable targetInteractable = _currentTargetObject.GetComponent<Interactable>();
+                if (targetInteractable == null) return;
+
+                if (_nextInteractionIsHealing && !targetInteractable.isHealed)
                 {
-                    StopCoroutine(_interactionSequenceCoroutine);
-                    if (_cameraMoveCoroutine != null) StopCoroutine(_cameraMoveCoroutine);
-                    RestoreCameraParenting();
-                    InputEnabled(true);
-                    if (_playerPathMovement != null) _playerPathMovement.EnableOrientation();
+                    if (_interactionSequenceCoroutine != null)
+                    {
+                        StopCoroutine(_interactionSequenceCoroutine);
+                        _interactionSequenceCoroutine = null;
+                    }
+                    _interactionSequenceCoroutine = StartCoroutine(HealAndEndSequence(targetInteractable));
+                    _nextInteractionIsHealing = false;
                 }
-                _interactionSequenceCoroutine = StartCoroutine(InteractionSequenceCoroutine(_currentTargetObject));
+                else if (!_isInteracting && !targetInteractable.isHealed)
+                {
+                    if (_interactionSequenceCoroutine != null)
+                    {
+                        StopCoroutine(_interactionSequenceCoroutine);
+                    }
+                    _interactionSequenceCoroutine = StartCoroutine(InteractionSequenceCoroutine(targetInteractable));
+                }
             }
             else if (_isInteracting)
             {
@@ -86,9 +102,11 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
-    private IEnumerator InteractionSequenceCoroutine(GameObject target)
+    private IEnumerator InteractionSequenceCoroutine(Interactable targetInteractable)
     {
+        GameObject target = targetInteractable.gameObject;
         _isInteracting = true;
+        _nextInteractionIsHealing = false;
         OnInteractWithTarget?.Invoke(target);
         InputEnabled(false);
 
@@ -100,7 +118,6 @@ public class PlayerInteract : MonoBehaviour
             _mainCamera.transform.SetParent(null, true);
         }
 
-        Interactable targetInteractable = target.GetComponent<Interactable>();
         if (targetInteractable == null || _mainCamera == null)
         {
             EndInteraction();
@@ -117,6 +134,8 @@ public class PlayerInteract : MonoBehaviour
             }
         }
 
+        // Moving player and camera
+
         Vector3 directionToTarget = target.transform.position - transform.position;
         directionToTarget.y = 0f;
 
@@ -125,13 +144,13 @@ public class PlayerInteract : MonoBehaviour
             Quaternion initialPlayerRotation = transform.rotation;
             Quaternion targetPlayerLookRotation = Quaternion.LookRotation(directionToTarget);
 
-            if (playerLookAtTargetDuration > 0f)
+            if (_playerLookAtTargetDuration > 0f)
             {
                 float lookAtElapsedTime = 0f;
-                while (lookAtElapsedTime < playerLookAtTargetDuration)
+                while (lookAtElapsedTime < _playerLookAtTargetDuration)
                 {
                     lookAtElapsedTime += Time.deltaTime;
-                    float t = Mathf.Clamp01(lookAtElapsedTime / playerLookAtTargetDuration);
+                    float t = Mathf.Clamp01(lookAtElapsedTime / _playerLookAtTargetDuration);
                     transform.rotation = Quaternion.Slerp(initialPlayerRotation, targetPlayerLookRotation, t);
                     yield return null;
                 }
@@ -144,18 +163,38 @@ public class PlayerInteract : MonoBehaviour
             StopCoroutine(_cameraMoveCoroutine);
         }
         _cameraMoveCoroutine = StartCoroutine(MoveCameraToTarget(targetInteractable));
-        
+
         if (_cameraMoveCoroutine != null)
         {
             yield return _cameraMoveCoroutine;
         }
-        
+
+        // Dialogue Scrolling
+
         if (_playerInteractionUI != null)
         {
             _playerInteractionUI.ShowDialogue(targetInteractable.dialogue);
+            while (_playerInteractionUI.IsTextCurrentlyScrolling())
+            {
+                yield return null;
+            }
+            _nextInteractionIsHealing = true;
         }
-        
         _interactionSequenceCoroutine = null;
+    }
+
+    private IEnumerator HealAndEndSequence(Interactable targetToHeal)
+    {
+        _isInteracting = true;
+        if (_healingParticles != null)
+        {
+            Instantiate(_healingParticles, targetToHeal.transform.position, Quaternion.identity);
+        }
+        targetToHeal.isHealed = true;
+
+        yield return new WaitForSeconds(_postHealInputDisableDuration);
+
+        TriggerEndInteraction();
     }
 
     public void TriggerEndInteraction()
@@ -196,11 +235,9 @@ public class PlayerInteract : MonoBehaviour
             _mainCamera.transform.localPosition = _originalCameraLocalPosition;
             _mainCamera.transform.localRotation = _originalCameraLocalRotation;
         }
-        else if (_mainCamera != null && _originalCameraParent == null) // Case where camera started with no parent
+        else if (_mainCamera != null && _originalCameraParent == null)
         {
-             _mainCamera.transform.SetParent(null, false); // Ensure it's unparented if it started that way
-             // Or if you always want it to reparent to something default, handle that here.
-             // For now, this just sets it to its original state (potentially unparented).
+             _mainCamera.transform.SetParent(null, false);
              _mainCamera.transform.localPosition = _originalCameraLocalPosition;
              _mainCamera.transform.localRotation = _originalCameraLocalRotation;
         }
@@ -219,10 +256,10 @@ public class PlayerInteract : MonoBehaviour
         Quaternion startRotation = _mainCamera.transform.rotation;
         float elapsedTime = 0f;
 
-        while (elapsedTime < cameraMoveDuration)
+        while (elapsedTime < _cameraMoveDuration)
         {
             elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / cameraMoveDuration);
+            float t = Mathf.Clamp01(elapsedTime / _cameraMoveDuration);
             _mainCamera.transform.position = Vector3.Lerp(startPosition, targetCamTransform.position, t);
             _mainCamera.transform.rotation = Quaternion.Slerp(startRotation, targetCamTransform.rotation, t);
             yield return null;
