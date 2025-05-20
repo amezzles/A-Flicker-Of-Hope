@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class PlayerInteractionUI : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerInteractionUI : MonoBehaviour
 
     [SerializeField] private Vector2 _screenOffset = new Vector2(0, 50);
     [SerializeField] private Vector2 _dialogueButtonOffset = new Vector2(0, 200);
+    [SerializeField] private float _textScrollSpeed = 0.15f;
+
     private RectTransform _panelRectTransform;
     private RectTransform _buttonPromptRectTransform;
     private Vector2 _originalButtonPromptAnchoredPosition;
@@ -21,6 +24,8 @@ public class PlayerInteractionUI : MonoBehaviour
 
     public Canvas interactionCanvas;
     public Camera playerCamera;
+
+    private Coroutine _currentScrollingCoroutine;
 
     void Awake()
     {
@@ -69,6 +74,11 @@ public class PlayerInteractionUI : MonoBehaviour
             _playerInteract.OnInteractWithTarget -= HandleSuccessfulInteraction;
             _playerInteract.OnInteractionEnded -= HandleInteractionEnded;
         }
+        if (_currentScrollingCoroutine != null)
+        {
+            StopCoroutine(_currentScrollingCoroutine);
+            _currentScrollingCoroutine = null;
+        }
     }
 
     private void HandleTargetChanged(GameObject newTarget)
@@ -94,6 +104,13 @@ public class PlayerInteractionUI : MonoBehaviour
         _isShowingDialogue = false;
         _interactionEnabled = true;
 
+        if (_currentScrollingCoroutine != null)
+        {
+            StopCoroutine(_currentScrollingCoroutine);
+            _currentScrollingCoroutine = null;
+            if (_promptTextObject != null) _promptTextObject.text = "";
+        }
+
         if (_buttonPromptRectTransform != null)
         {
             _buttonPromptRectTransform.anchoredPosition = _originalButtonPromptAnchoredPosition;
@@ -108,6 +125,11 @@ public class PlayerInteractionUI : MonoBehaviour
             if (_isShowingDialogue && _promptPanel != null && _promptPanel.activeSelf)
             {
                 _isShowingDialogue = false;
+                if (_currentScrollingCoroutine != null)
+                {
+                    StopCoroutine(_currentScrollingCoroutine);
+                    _currentScrollingCoroutine = null;
+                }
                 HideAllPrompts();
             }
             return;
@@ -115,11 +137,15 @@ public class PlayerInteractionUI : MonoBehaviour
 
         if (_promptPanel != null)
         {
-            bool shouldPanelBeActive = _isShowingDialogue || (_interactionEnabled && _promptPanel.activeSelf);
+            bool shouldPanelBeActive = _isShowingDialogue || (_interactionEnabled && _currentTargetObject != null);
             if (shouldPanelBeActive)
             {
                 if (!_promptPanel.activeSelf) _promptPanel.SetActive(true);
                 PositionPromptPanel();
+            }
+            else if (_promptPanel.activeSelf && !_isShowingDialogue)
+            {
+                HideAllPrompts();
             }
         }
     }
@@ -179,6 +205,7 @@ public class PlayerInteractionUI : MonoBehaviour
             if (_promptTextObject != null)
             {
                 _promptTextObject.gameObject.SetActive(false);
+                _promptTextObject.text = "";
             }
             PositionPromptPanel();
         }
@@ -201,17 +228,23 @@ public class PlayerInteractionUI : MonoBehaviour
         }
         if (_promptTextObject != null && (_promptPanel == null || !_promptTextObject.transform.IsChildOf(_promptPanel.transform)))
         {
+            _promptTextObject.text = "";
             _promptTextObject.gameObject.SetActive(false);
+        }
+        if (_currentScrollingCoroutine != null)
+        {
+            StopCoroutine(_currentScrollingCoroutine);
+            _currentScrollingCoroutine = null;
         }
     }
 
-    public bool IsTextCurrentlyScrolling()
-    {
-        return _currentScrollingCoroutine != null;
-    }
+    public bool isTextCurrentlyScrolling => _currentScrollingCoroutine != null;
+
+    public bool isShowingDialogue => _isShowingDialogue;
 
     public void ShowDialogue(string dialogue)
     {
+        if (string.IsNullOrEmpty(dialogue)) { return; }
         _isShowingDialogue = true;
         _interactionEnabled = false;
 
@@ -237,9 +270,29 @@ public class PlayerInteractionUI : MonoBehaviour
 
         if (_promptTextObject != null)
         {
-            _promptTextObject.text = dialogue;
             _promptTextObject.gameObject.SetActive(true);
+            if (_currentScrollingCoroutine != null)
+            {
+                StopCoroutine(_currentScrollingCoroutine);
+            }
+            _currentScrollingCoroutine = StartCoroutine(ScrollTextCoroutine(dialogue));
         }
         PositionPromptPanel();
+    }
+
+    private IEnumerator ScrollTextCoroutine(string textToScroll)
+    {
+        if (_promptTextObject == null) { yield break; }
+
+        _promptTextObject.text = "";
+        _promptTextObject.ForceMeshUpdate();
+
+        foreach (char letter in textToScroll)
+        {
+            _promptTextObject.text += letter;
+            yield return new WaitForSeconds(_textScrollSpeed);
+        }
+        _buttonPromptImage.enabled = true;
+        _currentScrollingCoroutine = null;
     }
 }

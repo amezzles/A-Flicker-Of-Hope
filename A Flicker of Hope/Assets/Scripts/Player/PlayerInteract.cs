@@ -270,6 +270,12 @@ public class PlayerInteract : MonoBehaviour
         _cameraMoveCoroutine = null;
     }
 
+    private IEnumerator HealInteractionTarget(Interactable interactable)
+    {
+        if (interactable == null) yield break;
+        
+    }
+
     private void InputEnabled(bool enabled)
     {
         if (_playerPathMovement != null) _playerPathMovement._movementEnabled = enabled;
