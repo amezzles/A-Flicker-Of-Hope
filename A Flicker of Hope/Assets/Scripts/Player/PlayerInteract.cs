@@ -18,10 +18,7 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private float _cameraMoveDuration = 1.0f;
     [SerializeField] private float _playerLookAtTargetDuration = 0.25f;
     [SerializeField] private GameObject _healingParticles;
-<<<<<<< Updated upstream
     [SerializeField] private float _postHealInputDisableDuration = 1.0f;
-=======
->>>>>>> Stashed changes
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -178,7 +175,7 @@ public class PlayerInteract : MonoBehaviour
         if (_playerInteractionUI != null)
         {
             _playerInteractionUI.ShowDialogue(targetInteractable.dialogue);
-            while (_playerInteractionUI.IsTextCurrentlyScrolling())
+            while (_playerInteractionUI.isTextCurrentlyScrolling)
             {
                 yield return null;
             }
