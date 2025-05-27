@@ -724,6 +724,8 @@ MonoBehaviour:
   lookAtTarget: {fileID: 4992758198669102562}
   interactionNodeIndex: 7
   dialogue: RAHH I am monkey
+  isHealed: 0
+  corruptionParticles: {fileID: 0}
 --- !u!136 &808595862978361008
 CapsuleCollider:
   m_ObjectHideFlags: 0

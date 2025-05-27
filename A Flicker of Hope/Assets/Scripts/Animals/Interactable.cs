@@ -9,6 +9,7 @@ public class Interactable : MonoBehaviour
     public string dialogue;
     public bool isHealed = false;
 
+    [SerializeField] private GameObject corruptionParticles;
     private AnimalMovement animalMovement;
     private bool followStarted = false;
 
@@ -22,6 +23,7 @@ public class Interactable : MonoBehaviour
         if (isHealed && !followStarted && animalMovement != null && player != null)
         {
             Debug.Log($"Interaction complete for {gameObject.name}, animal will start following.");
+            corruptionParticles.SetActive(false);
             animalMovement.StartFollowing(player);
             followStarted = true;
         }

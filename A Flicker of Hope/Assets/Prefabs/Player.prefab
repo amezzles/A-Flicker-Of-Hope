@@ -594,6 +594,131 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &3107541604188276394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5105017799695664964}
+  - component: {fileID: 55813729164237422}
+  - component: {fileID: 9179060402214565954}
+  m_Layer: 5
+  m_Name: Butterfly Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &5105017799695664964
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107541604188276394}
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 54229.293}
+  m_LocalScale: {x: 209.55112, y: 209.55112, z: 209.5511}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5404448343590188278}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -5570.939, y: 90901.375}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!108 &55813729164237422
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107541604188276394}
+  m_Enabled: 1
+  serializedVersion: 11
+  m_Type: 2
+  m_Color: {r: 0.17503259, g: 0.2963375, b: 0.9433962, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
+--- !u!114 &9179060402214565954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107541604188276394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &3207592639016588177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1589,8 @@ MonoBehaviour:
   moveSpeed: 3
   rotationSpeed: 1
   currentDistanceAlongPath: 0
+  snapToNodeDuration: 0.5
+  _movementEnabled: 1
 --- !u!114 &6801290919645344538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,6 +1603,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd7c74a615d855489c8cacacdec9c47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraMoveDuration: 1
+  _playerLookAtTargetDuration: 0.25
+  _healingParticles: {fileID: 3131333411852694374, guid: cdd2e1b15edef18409e291c67be77d47, type: 3}
+  _postHealInputDisableDuration: 1
 --- !u!114 &7054709576218438182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1488,12 +1619,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 655572d17f205584394425c6143dec4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _promptTextObject: {fileID: 6697155344993882915}
+  _promptTextObject: {fileID: 4749368714047783151}
   _promptPanel: {fileID: 2756920985459989372}
   _buttonPromptImage: {fileID: 3573688284165161923}
-  _buttonSprite: {fileID: 1981658818, guid: d16419910976fcf438de4f6fe629b9bb, type: 3}
-  _pressedButtonSprite: {fileID: 1425198166, guid: d16419910976fcf438de4f6fe629b9bb, type: 3}
   _screenOffset: {x: 0, y: 100}
+  _dialogueButtonOffset: {x: 0, y: 200}
+  _textScrollSpeed: 0.15
   interactionCanvas: {fileID: 366804640914114003}
   playerCamera: {fileID: 2592364018437092766}
 --- !u!135 &2143935549787963328
@@ -5502,10 +5633,10 @@ ParticleSystem:
       emitProbability: 1
   LightsModule:
     enabled: 1
-    ratio: 1
-    light: {fileID: 0}
+    ratio: 0.5
+    light: {fileID: 55813729164237422}
     randomDistribution: 1
-    color: 0
+    color: 1
     range: 1
     intensity: 1
     rangeCurve:
@@ -5564,7 +5695,7 @@ ParticleSystem:
     intensityCurve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.3
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -7225,7 +7356,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -15.723961, y: 0, z: -24.386963, w: -62.70589}
+  m_margin: {x: -291.5011, y: 0, z: -297.64624, w: -145.18594}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12185,6 +12316,7 @@ Transform:
   - {fileID: 5203274448154624435}
   - {fileID: 7389804678501591133}
   - {fileID: 8514297581907831337}
+  - {fileID: 5105017799695664964}
   m_Father: {fileID: 6880537830777621177}
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 0}
 --- !u!111 &2001128739899559837
