@@ -13,12 +13,13 @@ public class AnimalMovement : MonoBehaviour
     [SerializeField] private float rotationLerpSpeed = 5.0f;
 
     [Header("Initial Approach Settings")]
-    [SerializeField] private float initialStillDuration = 0.5f;
+    [SerializeField] private float initialStillDuration = 1.0f;
     [SerializeField] private float initialApproachMoveDuration = 1.5f;
 
     private float currentTargetDistanceOnPath;
     private bool isFollowing = false;
     private Coroutine initialApproachCoroutine;
+    private Vector3 animalLastLookDirection;
 
     private float currentSpeed;
     public float CurrentSpeed => currentSpeed;
@@ -47,6 +48,7 @@ public class AnimalMovement : MonoBehaviour
         {
             StopCoroutine(initialApproachCoroutine);
         }
+        animalLastLookDirection = transform.forward;
         initialApproachCoroutine = StartCoroutine(PerformInitialApproach());
     }
 
@@ -66,23 +68,21 @@ public class AnimalMovement : MonoBehaviour
             yield break;
         }
 
-        Quaternion finalTargetRotation;
-        Vector3 playerLookDirectionValue = playerToFollow.LastLookDirection;
-        if (playerLookDirectionValue != Vector3.zero)
+        Quaternion finalTargetRotation = transform.rotation;
+        Vector3 determinedLookDirForApproach = transform.forward;
+
+        Vector3 pathDirAtAnimalLandingSpot = pathManager.GetDirectionAtDistance(targetFollowDistanceOnPath);
+        if (!float.IsNaN(pathDirAtAnimalLandingSpot.x) && pathDirAtAnimalLandingSpot != Vector3.zero)
         {
-            finalTargetRotation = Quaternion.LookRotation(playerLookDirectionValue);
-        }
-        else
-        {
-            Vector3 pathDir = pathManager.GetDirectionAtDistance(targetFollowDistanceOnPath);
-            if (!float.IsNaN(pathDir.x) && pathDir != Vector3.zero)
+            if (playerToFollow.CurrentMoveInput < -0.01f)
             {
-                finalTargetRotation = Quaternion.LookRotation(pathDir);
+                determinedLookDirForApproach = -pathDirAtAnimalLandingSpot;
             }
             else
             {
-                finalTargetRotation = transform.rotation;
+                determinedLookDirForApproach = pathDirAtAnimalLandingSpot;
             }
+            finalTargetRotation = Quaternion.LookRotation(determinedLookDirForApproach);
         }
 
         Vector3 startPosition = transform.position;
@@ -103,6 +103,12 @@ public class AnimalMovement : MonoBehaviour
         transform.position = finalTargetPosition;
         transform.rotation = finalTargetRotation;
 
+        if (determinedLookDirForApproach != Vector3.zero)
+        {
+            this.animalLastLookDirection = determinedLookDirForApproach;
+        }
+
+
         this.currentTargetDistanceOnPath = targetFollowDistanceOnPath;
 
         isFollowing = true;
@@ -115,6 +121,7 @@ public class AnimalMovement : MonoBehaviour
         if (!isFollowing || playerToFollow == null || pathManager == null) { return; }
 
         currentSpeed = playerToFollow.CurrentSpeed;
+
         float playerCurrentDistance = playerToFollow.CurrentDistanceAlongPath;
         currentTargetDistanceOnPath = playerCurrentDistance - followDistanceOffset;
 
@@ -127,11 +134,23 @@ public class AnimalMovement : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, targetPositionOnPath, positionLerpSpeed * Time.deltaTime);
 
-        Vector3 playerLookDirection = playerToFollow.LastLookDirection;
+        Vector3 currentPathDirForAnimal = pathManager.GetDirectionAtDistance(currentTargetDistanceOnPath);
 
-        if (playerLookDirection != Vector3.zero)
+        if (!float.IsNaN(currentPathDirForAnimal.x) && currentPathDirForAnimal != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(playerLookDirection);
+            if (playerToFollow.CurrentMoveInput < -0.01f)
+            {
+                animalLastLookDirection = -currentPathDirForAnimal;
+            }
+            else if (playerToFollow.CurrentMoveInput > 0.01f)
+            {
+                animalLastLookDirection = currentPathDirForAnimal;
+            }
+        }
+
+        if (animalLastLookDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(animalLastLookDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationLerpSpeed * Time.deltaTime);
         }
     }
