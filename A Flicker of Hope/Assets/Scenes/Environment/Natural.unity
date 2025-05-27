@@ -324,7 +324,7 @@ MonoBehaviour:
   interactionCameraTransform: {fileID: 2125982681}
   lookAtTarget: {fileID: 63428877}
   interactionNodeIndex: 18
-  dialogue: Prongs
+  dialogue: the cricket no relief, And the dry stone no sound of water.
   isHealed: 0
   corruptionParticles: {fileID: 1305954288}
 --- !u!1 &79594673
@@ -473,7 +473,8 @@ MonoBehaviour:
   interactionCameraTransform: {fileID: 79594674}
   lookAtTarget: {fileID: 81416650}
   interactionNodeIndex: 3
-  dialogue: Reek
+  dialogue: What are the roots that clutch, what branches grow Out of this stony
+    rubbish?
   isHealed: 0
   corruptionParticles: {fileID: 27397592}
 --- !u!136 &81416655
@@ -1056,7 +1057,7 @@ MonoBehaviour:
   interactionCameraTransform: {fileID: 459221795}
   lookAtTarget: {fileID: 216753488}
   interactionNodeIndex: 21
-  dialogue: Chirp chirp
+  dialogue: Only There is shadow under this red rock,
   isHealed: 0
   corruptionParticles: {fileID: 151710107}
 --- !u!1 &221047275
@@ -2295,6 +2296,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7054709576218438182, guid: b1da8c6adcdd86d4087f5a58f2f889e1, type: 3}
+      propertyPath: _textScrollSpeed
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2511,7 +2516,7 @@ MonoBehaviour:
   interactionCameraTransform: {fileID: 1487526703}
   lookAtTarget: {fileID: 870268309}
   interactionNodeIndex: 12
-  dialogue: Memememe
+  dialogue: where the sun beats, And the dead tree gives no shelter,
   isHealed: 0
   corruptionParticles: {fileID: 408272202}
 --- !u!136 &870268312
@@ -4251,6 +4256,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1122984375}
     m_Modifications:
+    - target: {fileID: 1274985701565549939, guid: 84b7c8441f160174fa5c6f94cf397f0a, type: 3}
+      propertyPath: dialogue
+      value: Son of man, You cannot say, or guess, for you know only A heap of broken
+        images,
+      objectReference: {fileID: 0}
     - target: {fileID: 1274985701565549939, guid: 84b7c8441f160174fa5c6f94cf397f0a, type: 3}
       propertyPath: corruptionParticles
       value: 
