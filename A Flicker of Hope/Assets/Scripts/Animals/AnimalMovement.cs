@@ -20,6 +20,9 @@ public class AnimalMovement : MonoBehaviour
     private bool isFollowing = false;
     private Coroutine initialApproachCoroutine;
 
+    private float currentSpeed;
+    public float CurrentSpeed => currentSpeed;
+
     public void StartFollowing(PlayerPathMovement player)
     {
         if (player == null)
@@ -111,6 +114,7 @@ public class AnimalMovement : MonoBehaviour
     {
         if (!isFollowing || playerToFollow == null || pathManager == null) { return; }
 
+        currentSpeed = playerToFollow.CurrentSpeed;
         float playerCurrentDistance = playerToFollow.CurrentDistanceAlongPath;
         currentTargetDistanceOnPath = playerCurrentDistance - followDistanceOffset;
 

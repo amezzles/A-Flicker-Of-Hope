@@ -3228,6 +3228,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1274985701565549939, guid: 84b7c8441f160174fa5c6f94cf397f0a, type: 3}
+      propertyPath: corruptionParticles
+      value: 
+      objectReference: {fileID: 4869099018845075250}
     - target: {fileID: 4992758198669102562, guid: 84b7c8441f160174fa5c6f94cf397f0a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 57.767
@@ -3794,6 +3798,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1880819055}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4869099018845075250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6657448145922699436, guid: 8a32b1ee7c18527479f8f30bfd3b12ff, type: 3}
+  m_PrefabInstance: {fileID: 5671431050901594260}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5590097766407663650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 94666660072184557, guid: 8a32b1ee7c18527479f8f30bfd3b12ff, type: 3}

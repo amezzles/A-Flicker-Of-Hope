@@ -18,6 +18,9 @@ public class PlayerPathMovement : MonoBehaviour
     private float currentMoveInput = 0f;
     public float CurrentMoveInput => currentMoveInput;
 
+    private float currentSpeed;
+    public float CurrentSpeed => currentSpeed;
+
     private Vector3 lastLookDirection;
     public Vector3 LastLookDirection => lastLookDirection;
 
@@ -75,6 +78,7 @@ public class PlayerPathMovement : MonoBehaviour
     {
         if (!_movementEnabled && currentMoveInput != 0f) { currentMoveInput = 0f; }
 
+        currentSpeed = Mathf.Abs(currentMoveInput) * moveSpeed;
         currentDistanceAlongPath += currentMoveInput * moveSpeed * Time.deltaTime;
 
         float totalPathLength = pathManager.GetTotalPathLength();
