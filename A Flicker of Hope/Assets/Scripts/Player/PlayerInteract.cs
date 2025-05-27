@@ -198,6 +198,7 @@ public class PlayerInteract : MonoBehaviour
             Instantiate(_healingParticles, targetToHeal.transform.position, Quaternion.identity);
         }
         targetToHeal.isHealed = true;
+        targetToHeal.OnInteractionComplete(_playerPathMovement);
 
         if (CurrentTargetObject == targetToHeal.gameObject)
         {

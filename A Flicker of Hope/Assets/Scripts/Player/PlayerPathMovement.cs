@@ -5,13 +5,22 @@ using System.Collections;
 public class PlayerPathMovement : MonoBehaviour
 {
     [SerializeField] private PathManager pathManager;
+    public PathManager PathManagerInstance => pathManager;
+
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float rotationSpeed = 1f;
+
     [SerializeField] private float currentDistanceAlongPath = 0f;
+    public float CurrentDistanceAlongPath => currentDistanceAlongPath;
+
     [SerializeField] private float snapToNodeDuration = 0.5f;
 
     private float currentMoveInput = 0f;
+    public float CurrentMoveInput => currentMoveInput;
+
     private Vector3 lastLookDirection;
+    public Vector3 LastLookDirection => lastLookDirection;
+
     private Coroutine _snapToNodeCoroutine;
 
     public bool _movementEnabled = true;
@@ -57,13 +66,15 @@ public class PlayerPathMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!_movementEnabled) { return; }
+        if (!_movementEnabled) { currentMoveInput = 0f; return; }
         Vector2 inputVector = context.ReadValue<Vector2>();
         currentMoveInput = inputVector.y;
     }
 
     void Update()
     {
+        if (!_movementEnabled && currentMoveInput != 0f) { currentMoveInput = 0f; }
+
         currentDistanceAlongPath += currentMoveInput * moveSpeed * Time.deltaTime;
 
         float totalPathLength = pathManager.GetTotalPathLength();
