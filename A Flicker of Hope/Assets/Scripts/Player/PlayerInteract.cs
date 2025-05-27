@@ -19,6 +19,9 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private float _playerLookAtTargetDuration = 0.25f;
     [SerializeField] private GameObject _healingParticles;
     [SerializeField] private float _postHealInputDisableDuration = 1.0f;
+    [SerializeField] private int _animalsHealed = 0;
+    [SerializeField] private bool _canTriggerEndSequence = false;
+    public bool CanTriggerEndSequence => _canTriggerEndSequence;
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -230,6 +233,12 @@ public class PlayerInteract : MonoBehaviour
 
     private void EndInteraction()
     {
+        _animalsHealed++;
+        if (_animalsHealed == 5)
+        {
+            _canTriggerEndSequence = true;
+        }
+
         RestoreCameraParenting();
         InputEnabled(true);
         if (_playerPathMovement != null)
@@ -284,7 +293,7 @@ public class PlayerInteract : MonoBehaviour
         _cameraMoveCoroutine = null;
     }
 
-    private void InputEnabled(bool enabled)
+    public void InputEnabled(bool enabled)
     {
         if (_playerPathMovement != null) _playerPathMovement._movementEnabled = enabled;
         _interactionEnabled = enabled;
