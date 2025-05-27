@@ -2393,6 +2393,10 @@ PrefabInstance:
       propertyPath: pathManager
       value: 
       objectReference: {fileID: 1880819054}
+    - target: {fileID: 6712249789322517754, guid: b1da8c6adcdd86d4087f5a58f2f889e1, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6880537830777621177, guid: b1da8c6adcdd86d4087f5a58f2f889e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 58.736393
