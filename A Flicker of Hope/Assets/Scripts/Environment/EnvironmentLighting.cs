@@ -1,17 +1,28 @@
 using UnityEngine;
 
-public class SkyboxToggle : MonoBehaviour
+public class EnvironmentLighting : MonoBehaviour
 {
     public Material naturalSky;
     public Material corruptSky;
     public Light directionalLight;
 
-    private bool usingCorruptSky = false;
+    private bool usingCorruptSky = true;
 
     void Start()
     {
         //enable fog
         RenderSettings.fog = true;
+
+        //apply initial corrupt lighting
+        RenderSettings.skybox = corruptSky;
+        RenderSettings.fogDensity = 0.033f;
+
+        if (directionalLight != null)
+        {
+            directionalLight.color = new Color32(0x8E, 0x18, 0x94, 0xFF);
+        }
+
+        DynamicGI.UpdateEnvironment();
     }
 
     void Update()
@@ -26,21 +37,17 @@ public class SkyboxToggle : MonoBehaviour
     {
         usingCorruptSky = !usingCorruptSky;
 
-        //sky material
         RenderSettings.skybox = usingCorruptSky ? corruptSky : naturalSky;
 
-        //fog density
         RenderSettings.fogDensity = usingCorruptSky ? 0.033f : 0f;
 
-        //directional light color
         if (directionalLight != null)
         {
             directionalLight.color = usingCorruptSky
                 ? new Color32(0x8E, 0x18, 0x94, 0xFF)
-                : Color.white; 
+                : Color.white;
         }
 
-        //refresh global illumination environment
         DynamicGI.UpdateEnvironment();
     }
 }
