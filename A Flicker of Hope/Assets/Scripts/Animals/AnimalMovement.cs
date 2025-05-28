@@ -24,6 +24,13 @@ public class AnimalMovement : MonoBehaviour
     private float currentSpeed;
     public float CurrentSpeed => currentSpeed;
 
+    private Animator animator;
+
+    void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     public void StartFollowing(PlayerPathMovement player)
     {
         if (player == null)
@@ -158,6 +165,8 @@ public class AnimalMovement : MonoBehaviour
     public void StopFollowing()
     {
         isFollowing = false;
+        animator.SetBool("Ending", true);
+        Debug.Log("Stop following");
         if (initialApproachCoroutine != null)
         {
             StopCoroutine(initialApproachCoroutine);
