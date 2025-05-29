@@ -11,7 +11,7 @@ public class EnvironmentLighting : MonoBehaviour
     public Light directionalLight;
 
     [Header("Transition Settings")]
-    public float transitionDuration = 2f;
+    public float transitionDuration = 4f;
 
     private bool usingCorruptSky = true;
 
@@ -67,9 +67,8 @@ public class EnvironmentLighting : MonoBehaviour
         DynamicGI.UpdateEnvironment();
     }
 
-    /// <summary>
-    /// Called by Timeline signal to start smooth transition to natural lighting.
-    /// </summary>
+
+    //called by Timeline signal to start smooth transition to natural lighting
     public void StartNaturalLightingTransition()
     {
         StartCoroutine(TransitionToNaturalLighting());
