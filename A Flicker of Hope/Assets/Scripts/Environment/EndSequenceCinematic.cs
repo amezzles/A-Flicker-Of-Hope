@@ -7,7 +7,7 @@ public class EndSequenceCinematic : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Camera cinematicCamera;
     [SerializeField] private Image fadeImage;
-    [SerializeField] private float fadeDuration = 1.5f;
+    [SerializeField] private float fadeDuration = 1f;
 
     public void StartCinematicSequence()
     {
