@@ -17,14 +17,14 @@ public class EnvironmentLighting : MonoBehaviour
 
     void Start()
     {
-        // Enable fog and set initial "corrupt" lighting
+        //enable fog and set initial lighting
         RenderSettings.fog = true;
         ApplyCorruptLighting();
     }
 
     void Update()
     {
-        // Manual toggle for testing
+        //temp
         if (Input.GetKeyDown(KeyCode.M))
         {
             ToggleLighting();
