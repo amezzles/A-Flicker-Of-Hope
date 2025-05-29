@@ -87,7 +87,6 @@ public class EnvironmentLighting : MonoBehaviour
         Material startSkybox = RenderSettings.skybox;
         Material targetSkybox = naturalSky;
 
-        // Optional: switch skybox immediately or at the end
         RenderSettings.skybox = targetSkybox;
 
         while (time < transitionDuration)
@@ -103,7 +102,6 @@ public class EnvironmentLighting : MonoBehaviour
             yield return null;
         }
 
-        // Ensure final values are exact
         if (directionalLight != null)
             directionalLight.color = targetColor;
 
