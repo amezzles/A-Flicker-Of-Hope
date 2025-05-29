@@ -6,6 +6,7 @@ public class EndSequenceTrigger : MonoBehaviour
 {
     [SerializeField] private Transform[] endAnimalLocations;
     [SerializeField] private EndSequenceCinematic cinematicSequence;
+    [SerializeField] private GameObject HUD;
     private PlayerInteract playerInteract;
 
     private void OnTriggerEnter(Collider other)
@@ -39,6 +40,11 @@ public class EndSequenceTrigger : MonoBehaviour
                     animal.transform.rotation = endAnimalLocations[i].rotation;
                 }
             }
+        }
+
+        if (HUD != null)
+        {
+            HUD.SetActive(false);
         }
 
         if (cinematicSequence != null)
