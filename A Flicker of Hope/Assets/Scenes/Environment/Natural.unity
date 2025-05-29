@@ -532,7 +532,6 @@ Transform:
   - {fileID: 1360079576}
   - {fileID: 331216351}
   - {fileID: 96563407}
-  - {fileID: 432341923}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &96563403
@@ -1649,6 +1648,7 @@ GameObject:
   - component: {fileID: 432341922}
   - component: {fileID: 432341921}
   - component: {fileID: 432341920}
+  - component: {fileID: 432341924}
   m_Layer: 0
   m_Name: CinematicCamera
   m_TagString: Untagged
@@ -1768,12 +1768,34 @@ Transform:
   m_GameObject: {fileID: 432341919}
   serializedVersion: 2
   m_LocalRotation: {x: -0.093574196, y: 0.8953665, z: -0.22463241, w: -0.37296513}
-  m_LocalPosition: {x: -22.38948, y: 17.61032, z: -3.0344696}
+  m_LocalPosition: {x: -923.96625, y: -520.4737, z: 38.942627}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 84815637}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 2068520024}
+  m_LocalEulerAnglesHint: {x: 0.2531877, y: 5.446597, z: 357.0832}
+--- !u!95 &432341924
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432341919}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &459221794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1805,6 +1827,84 @@ Transform:
   m_Children: []
   m_Father: {fileID: 216753488}
   m_LocalEulerAnglesHint: {x: 0, y: 82.265, z: 0}
+--- !u!1 &478786550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 478786551}
+  - component: {fileID: 478786553}
+  - component: {fileID: 478786552}
+  m_Layer: 5
+  m_Name: CinematicDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &478786551
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478786550}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2068520024}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -27.937859, y: 8.679725}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &478786552
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478786550}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!320 &478786553
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478786550}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
+  m_InitialState: 1
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -8190797427243860034, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
+    value: {fileID: 432341924}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1 &482350227
 GameObject:
   m_ObjectHideFlags: 0
@@ -4964,6 +5064,44 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
+--- !u!1 &2068520022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2068520024}
+  m_Layer: 5
+  m_Name: EndSequence
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2068520024
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068520022}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2115825456}
+  - {fileID: 432341923}
+  - {fileID: 478786551}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 960, y: 540}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2073358478
 GameObject:
   m_ObjectHideFlags: 0
@@ -5039,6 +5177,7 @@ MonoBehaviour:
   - {fileID: 762732422}
   cinematicSequence: {fileID: 2073358482}
   HUD: {fileID: 964003203}
+  endSequenceTimeline: {fileID: 478786553}
 --- !u!114 &2073358482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5068,7 +5207,7 @@ GameObject:
   - component: {fileID: 2115825454}
   - component: {fileID: 2115825453}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Transition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5150,7 +5289,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1605522250}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2068520024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5327,4 +5466,4 @@ SceneRoots:
   - {fileID: 84815637}
   - {fileID: 1122984375}
   - {fileID: 875781039}
-  - {fileID: 2115825456}
+  - {fileID: 2068520024}

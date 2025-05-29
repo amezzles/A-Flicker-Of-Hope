@@ -7,7 +7,7 @@ public class EndSequenceCinematic : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Camera cinematicCamera;
     [SerializeField] private Image fadeImage;
-    [SerializeField] private float fadeDuration = 2f;
+    [SerializeField] private float fadeDuration = 1.5f;
 
     public void StartCinematicSequence()
     {
@@ -33,7 +33,7 @@ public class EndSequenceCinematic : MonoBehaviour
         playerCamera.gameObject.SetActive(false);
         cinematicCamera.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
         //fade back in
         elapsedTime = 0f;

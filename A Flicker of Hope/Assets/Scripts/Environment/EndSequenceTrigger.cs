@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using UnityEngine.Playables;
 
 public class EndSequenceTrigger : MonoBehaviour
 {
     [SerializeField] private Transform[] endAnimalLocations;
     [SerializeField] private EndSequenceCinematic cinematicSequence;
     [SerializeField] private GameObject HUD;
+    [SerializeField] private PlayableDirector endSequenceTimeline;
+
     private PlayerInteract playerInteract;
 
     private void OnTriggerEnter(Collider other)
@@ -52,9 +55,11 @@ public class EndSequenceTrigger : MonoBehaviour
             Debug.Log("Cinematic sequence found. Starting cinematic...");
             cinematicSequence.StartCinematicSequence();
         }
-        else
+
+        if (endSequenceTimeline != null)
         {
-            Debug.LogWarning("Cinematic sequence is null. Did you forget to assign it in the Inspector?");
+            Debug.Log("Playing end sequence timeline...");
+            endSequenceTimeline.Play();
         }
 
         yield return null;
