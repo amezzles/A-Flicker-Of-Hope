@@ -1809,6 +1809,7 @@ MonoBehaviour:
   naturalSky: {fileID: 2100000, guid: 202c39b3f3721eb4982b5753ba698334, type: 2}
   corruptSky: {fileID: 2100000, guid: 9b301793d0bdfb747be09835e968fb59, type: 2}
   directionalLight: {fileID: 87727450}
+  transitionDuration: 4
 --- !u!1 &833372050
 GameObject:
   m_ObjectHideFlags: 0
