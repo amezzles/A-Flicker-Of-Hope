@@ -5,6 +5,7 @@ using System.Linq;
 public class EndSequenceTrigger : MonoBehaviour
 {
     [SerializeField] private Transform[] endAnimalLocations;
+    [SerializeField] private EndSequenceCinematic cinematicSequence;
     private PlayerInteract playerInteract;
 
     private void OnTriggerEnter(Collider other)
@@ -39,6 +40,17 @@ public class EndSequenceTrigger : MonoBehaviour
                 }
             }
         }
+
+        if (cinematicSequence != null)
+        {
+            Debug.Log("Cinematic sequence found. Starting cinematic...");
+            cinematicSequence.StartCinematicSequence();
+        }
+        else
+        {
+            Debug.LogWarning("Cinematic sequence is null. Did you forget to assign it in the Inspector?");
+        }
+
         yield return null;
     }
 }
