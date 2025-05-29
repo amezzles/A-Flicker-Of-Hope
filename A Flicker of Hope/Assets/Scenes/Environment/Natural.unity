@@ -1655,7 +1655,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &432341920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1903,6 +1903,8 @@ PlayableDirector:
   m_SceneBindings:
   - key: {fileID: -8190797427243860034, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
     value: {fileID: 432341924}
+  - key: {fileID: -7785433330004540593, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
+    value: {fileID: 1790341498}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &482350227
@@ -4491,6 +4493,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1790341497}
   - component: {fileID: 1790341496}
+  - component: {fileID: 1790341498}
   m_Layer: 0
   m_Name: LightingManager
   m_TagString: Untagged
@@ -4513,6 +4516,7 @@ MonoBehaviour:
   naturalSky: {fileID: 2100000, guid: 202c39b3f3721eb4982b5753ba698334, type: 2}
   corruptSky: {fileID: 2100000, guid: 9b301793d0bdfb747be09835e968fb59, type: 2}
   directionalLight: {fileID: 330345922}
+  transitionDuration: 2
 --- !u!4 &1790341497
 Transform:
   m_ObjectHideFlags: 0
@@ -4528,6 +4532,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 646180143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1790341498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790341495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 9db6cd247c5b3ca43a401835c15228ee, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1790341496}
+          m_TargetAssemblyTypeName: EnvironmentLighting, Assembly-CSharp
+          m_MethodName: StartNaturalLightingTransition
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1793799299
 GameObject:
   m_ObjectHideFlags: 0

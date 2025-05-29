@@ -1,52 +1,115 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnvironmentLighting : MonoBehaviour
 {
+    [Header("Skyboxes")]
     public Material naturalSky;
     public Material corruptSky;
+
+    [Header("Lighting")]
     public Light directionalLight;
+
+    [Header("Transition Settings")]
+    public float transitionDuration = 2f;
 
     private bool usingCorruptSky = true;
 
     void Start()
     {
-        //enable fog
+        // Enable fog and set initial "corrupt" lighting
         RenderSettings.fog = true;
-
-        //apply initial corrupt lighting
-        RenderSettings.skybox = corruptSky;
-        RenderSettings.fogDensity = 0.033f;
-
-        if (directionalLight != null)
-        {
-            directionalLight.color = new Color32(0x8E, 0x18, 0x94, 0xFF);
-        }
-
-        DynamicGI.UpdateEnvironment();
+        ApplyCorruptLighting();
     }
 
     void Update()
     {
+        // Manual toggle for testing
         if (Input.GetKeyDown(KeyCode.M))
         {
             ToggleLighting();
         }
     }
 
-    void ToggleLighting()
+    public void ToggleLighting()
     {
         usingCorruptSky = !usingCorruptSky;
 
-        RenderSettings.skybox = usingCorruptSky ? corruptSky : naturalSky;
+        if (usingCorruptSky)
+        {
+            ApplyCorruptLighting();
+        }
+        else
+        {
+            ApplyNaturalLighting();
+        }
+    }
 
-        RenderSettings.fogDensity = usingCorruptSky ? 0.033f : 0f;
+    private void ApplyCorruptLighting()
+    {
+        RenderSettings.skybox = corruptSky;
+        RenderSettings.fogDensity = 0.033f;
 
         if (directionalLight != null)
+            directionalLight.color = new Color32(0x8E, 0x18, 0x94, 0xFF);
+
+        DynamicGI.UpdateEnvironment();
+    }
+
+    private void ApplyNaturalLighting()
+    {
+        RenderSettings.skybox = naturalSky;
+        RenderSettings.fogDensity = 0f;
+
+        if (directionalLight != null)
+            directionalLight.color = Color.white;
+
+        DynamicGI.UpdateEnvironment();
+    }
+
+    /// <summary>
+    /// Called by Timeline signal to start smooth transition to natural lighting.
+    /// </summary>
+    public void StartNaturalLightingTransition()
+    {
+        StartCoroutine(TransitionToNaturalLighting());
+    }
+
+    private IEnumerator TransitionToNaturalLighting()
+    {
+        float time = 0f;
+
+        Color startColor = directionalLight.color;
+        Color targetColor = Color.white;
+
+        float startFog = RenderSettings.fogDensity;
+        float targetFog = 0f;
+
+        Material startSkybox = RenderSettings.skybox;
+        Material targetSkybox = naturalSky;
+
+        // Optional: switch skybox immediately or at the end
+        RenderSettings.skybox = targetSkybox;
+
+        while (time < transitionDuration)
         {
-            directionalLight.color = usingCorruptSky
-                ? new Color32(0x8E, 0x18, 0x94, 0xFF)
-                : Color.white;
+            float t = time / transitionDuration;
+
+            if (directionalLight != null)
+                directionalLight.color = Color.Lerp(startColor, targetColor, t);
+
+            RenderSettings.fogDensity = Mathf.Lerp(startFog, targetFog, t);
+
+            time += Time.deltaTime;
+            yield return null;
         }
+
+        // Ensure final values are exact
+        if (directionalLight != null)
+            directionalLight.color = targetColor;
+
+        RenderSettings.fogDensity = targetFog;
+        RenderSettings.skybox = targetSkybox;
 
         DynamicGI.UpdateEnvironment();
     }
