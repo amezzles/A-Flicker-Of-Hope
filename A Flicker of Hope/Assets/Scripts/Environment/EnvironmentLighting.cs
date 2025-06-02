@@ -24,11 +24,11 @@ public class EnvironmentLighting : MonoBehaviour
 
     void Update()
     {
-        //temp
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            ToggleLighting();
-        }
+        ////temp
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    ToggleLighting();
+        //}
     }
 
     public void ToggleLighting()

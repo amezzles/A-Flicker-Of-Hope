@@ -33,13 +33,13 @@ public class MenuLightingToggle : MonoBehaviour
     {
         usingCorruptSky = !usingCorruptSky;
 
-        // Skybox
+        //skybox
         RenderSettings.skybox = usingCorruptSky ? corruptSky : naturalSky;
 
-        // Fog
+        //fog
         RenderSettings.fogDensity = usingCorruptSky ? 0.033f : 0f;
 
-        // Directional light color
+        //directional light color
         if (directionalLight != null)
         {
             directionalLight.color = usingCorruptSky
@@ -47,7 +47,7 @@ public class MenuLightingToggle : MonoBehaviour
                 : Color.white;
         }
 
-        // Text gradient
+        //text gradient
         foreach (TMP_Text text in gradientTexts)
         {
             VertexGradient gradient = usingCorruptSky
