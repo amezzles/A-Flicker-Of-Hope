@@ -1464,6 +1464,8 @@ MonoBehaviour:
   moveSpeed: 3
   rotationSpeed: 1
   currentDistanceAlongPath: 0
+  snapToNodeDuration: 0.5
+  _movementEnabled: 1
 --- !u!114 &6801290919645344538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,6 +1478,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd7c74a615d855489c8cacacdec9c47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraMoveDuration: 1
+  _playerLookAtTargetDuration: 0.25
+  _healingParticles: {fileID: 0}
+  _postHealInputDisableDuration: 1
 --- !u!114 &7054709576218438182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1488,12 +1494,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 655572d17f205584394425c6143dec4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _promptTextObject: {fileID: 6697155344993882915}
+  _promptTextObject: {fileID: 4749368714047783151}
   _promptPanel: {fileID: 2756920985459989372}
   _buttonPromptImage: {fileID: 3573688284165161923}
-  _buttonSprite: {fileID: 1981658818, guid: d16419910976fcf438de4f6fe629b9bb, type: 3}
-  _pressedButtonSprite: {fileID: 1425198166, guid: d16419910976fcf438de4f6fe629b9bb, type: 3}
   _screenOffset: {x: 0, y: 100}
+  _dialogueButtonOffset: {x: 0, y: 200}
+  _textScrollSpeed: 0.15
   interactionCanvas: {fileID: 366804640914114003}
   playerCamera: {fileID: 2592364018437092766}
 --- !u!135 &2143935549787963328
