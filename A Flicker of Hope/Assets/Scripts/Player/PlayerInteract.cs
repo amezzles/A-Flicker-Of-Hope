@@ -22,6 +22,8 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private int _animalsHealed = 0;
     [SerializeField] private bool _canTriggerEndSequence = false;
     public bool CanTriggerEndSequence => _canTriggerEndSequence;
+    [SerializeField] private AudioClip _healingSFX;
+    private AudioSource _audioSource;
 
     public event Action<GameObject> OnCurrentTargetChanged;
     public event Action<GameObject> OnInteractWithTarget;
@@ -51,6 +53,7 @@ public class PlayerInteract : MonoBehaviour
         _playerPathMovement = GetComponent<PlayerPathMovement>();
         _playerInteractionUI = GetComponent<PlayerInteractionUI>();
         _mainCamera = Camera.main;
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -199,6 +202,12 @@ public class PlayerInteract : MonoBehaviour
         if (_healingParticles != null)
         {
             Instantiate(_healingParticles, targetToHeal.transform.position, Quaternion.identity);
+        }
+        if (_audioSource != null && _healingSFX != null)
+        {
+            _audioSource.clip = _healingSFX;
+            _audioSource.loop = false;
+            _audioSource.Play();
         }
         targetToHeal.isHealed = true;
         targetToHeal.OnInteractionComplete(_playerPathMovement);
