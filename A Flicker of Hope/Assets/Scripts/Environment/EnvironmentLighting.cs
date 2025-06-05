@@ -13,13 +13,13 @@ public class EnvironmentLighting : MonoBehaviour
     [Header("Transition Settings")]
     public float transitionDuration = 4f;
 
-    private bool usingCorruptSky = true;
+    private bool usingCorruptSky = false;
 
     void Start()
     {
         //enable fog and set initial lighting
         RenderSettings.fog = true;
-        ApplyCorruptLighting();
+        //ApplyCorruptLighting();
     }
 
     void Update()
@@ -63,6 +63,48 @@ public class EnvironmentLighting : MonoBehaviour
 
         if (directionalLight != null)
             directionalLight.color = Color.white;
+
+        DynamicGI.UpdateEnvironment();
+    }
+
+    public void StartCorruptLightingTransition()
+    {
+        StartCoroutine(TransitionToCorruptLighting());
+    }
+
+    private IEnumerator TransitionToCorruptLighting()
+    {
+        float time = 0f;
+
+        Color startColor = directionalLight.color;
+        Color targetColor = new Color32(0x8E, 0x18, 0x94, 0xFF); 
+
+        float startFog = RenderSettings.fogDensity;
+        float targetFog = 0.033f; 
+
+        Material startSkybox = RenderSettings.skybox;
+        Material targetSkybox = corruptSky;
+
+        RenderSettings.skybox = targetSkybox;
+
+        while (time < transitionDuration)
+        {
+            float t = time / transitionDuration;
+
+            if (directionalLight != null)
+                directionalLight.color = Color.Lerp(startColor, targetColor, t);
+
+            RenderSettings.fogDensity = Mathf.Lerp(startFog, targetFog, t);
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        if (directionalLight != null)
+            directionalLight.color = targetColor;
+
+        RenderSettings.fogDensity = targetFog;
+        RenderSettings.skybox = targetSkybox;
 
         DynamicGI.UpdateEnvironment();
     }
