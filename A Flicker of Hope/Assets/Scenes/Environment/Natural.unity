@@ -3377,13 +3377,14 @@ GameObject:
   - component: {fileID: 650951127}
   - component: {fileID: 650951126}
   - component: {fileID: 650951125}
+  - component: {fileID: 650951129}
   m_Layer: 5
   m_Name: CinematicCamera_Opening
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &650951125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3495,7 +3496,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650951124}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -54.08022}
+  m_LocalPosition: {x: 0, y: 0, z: 31.185963}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3503,9 +3504,31 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 920.1858, y: 519.87024}
+  m_AnchoredPosition: {x: 23.756142, y: -0.7449894}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &650951129
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650951124}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &681268801
 GameObject:
   m_ObjectHideFlags: 0
@@ -4594,6 +4617,7 @@ Transform:
   - {fileID: 766267705}
   - {fileID: 650951128}
   - {fileID: 1527079787}
+  - {fileID: 1830283678}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1015105160
@@ -6404,11 +6428,13 @@ PlayableDirector:
   m_Enabled: 1
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 16a4bfc29676a514190a4007395012f5, type: 2}
-  m_InitialState: 0
+  m_InitialState: 1
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
-  m_SceneBindings: []
+  m_SceneBindings:
+  - key: {fileID: 4166895923449166708, guid: 16a4bfc29676a514190a4007395012f5, type: 2}
+    value: {fileID: 650951129}
   m_ExposedReferences:
     m_References: []
 --- !u!224 &1527079787
@@ -7663,6 +7689,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f26944815ab7345a4249209d4caa30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1830283677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1830283678}
+  - component: {fileID: 1830283679}
+  m_Layer: 0
+  m_Name: OpeningSequenceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1830283678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830283677}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 986793996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1830283679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830283677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de03939b775e00145a22819bf59e6eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openingDirector: {fileID: 1527079786}
+  player: {fileID: 735150785}
+  hud: {fileID: 964003203}
+  playerCamera: {fileID: 818335971}
+  cinematicCamera: {fileID: 650951127}
 --- !u!1 &1853427158
 GameObject:
   m_ObjectHideFlags: 0
