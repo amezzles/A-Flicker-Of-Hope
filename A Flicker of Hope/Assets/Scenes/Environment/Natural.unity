@@ -2696,6 +2696,8 @@ PlayableDirector:
     value: {fileID: 905862100}
   - key: {fileID: 4731734034054251890, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
     value: {fileID: 1617720929}
+  - key: {fileID: -2489505110426481179, guid: 48171466b3aad1f4aa950d9f9cc98431, type: 2}
+    value: {fileID: 875781042}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &482350227
@@ -4299,112 +4301,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 875781039}
-  - component: {fileID: 875781038}
   - component: {fileID: 875781040}
+  - component: {fileID: 875781041}
+  - component: {fileID: 875781042}
   m_Layer: 0
-  m_Name: Music
+  m_Name: MusicManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!82 &875781038
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 875781037}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: baf792f72d692964aa6e2d5b63e3ed8e, type: 3}
-  m_Resource: {fileID: 8300000, guid: baf792f72d692964aa6e2d5b63e3ed8e, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!4 &875781039
 Transform:
   m_ObjectHideFlags: 0
@@ -4433,7 +4339,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 0bccda1083510464eacb3f0def59af62, type: 3}
   m_Resource: {fileID: 8300000, guid: 0bccda1083510464eacb3f0def59af62, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.335
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4517,6 +4423,117 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &875781041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875781037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f55480f95bdbbc478fde4c5af1b48b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicSource: {fileID: 875781040}
+  evilMusic: {fileID: 8300000, guid: baf792f72d692964aa6e2d5b63e3ed8e, type: 3}
+  happyMusic: {fileID: 8300000, guid: 0bccda1083510464eacb3f0def59af62, type: 3}
+  glitch: {fileID: 8300000, guid: a87f4596d2e97a84982996ff3bff00c2, type: 3}
+  endHeal: {fileID: 8300000, guid: 85ee80e624dbd4ecdac03cf56ddcf9b0, type: 3}
+  fadeDuration: 1
+--- !u!114 &875781042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875781037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 0}
+    - {fileID: 11400000, guid: ac378b56a18d105498e52a63c4a111f1, type: 2}
+    - {fileID: 11400000, guid: c94be91c1df99044ca40ec04ca3d5ba5, type: 2}
+    - {fileID: 11400000, guid: 28301fd3342bac643b233ead811af906, type: 2}
+    - {fileID: 11400000, guid: 9d515f6e1bcdab34ea0092ff05694df1, type: 2}
+    - {fileID: 11400000, guid: 1710f894a0a96694da62fc6fb2ac47b1, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 875781041}
+          m_TargetAssemblyTypeName: MusicSignalReceiver, Assembly-CSharp
+          m_MethodName: PlayEvilMusic
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 875781041}
+          m_TargetAssemblyTypeName: MusicSignalReceiver, Assembly-CSharp
+          m_MethodName: PlayHappyMusic
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 875781041}
+          m_TargetAssemblyTypeName: MusicSignalReceiver, Assembly-CSharp
+          m_MethodName: PlayGlitch
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 875781041}
+          m_TargetAssemblyTypeName: MusicSignalReceiver, Assembly-CSharp
+          m_MethodName: PlayEndHeal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 875781041}
+          m_TargetAssemblyTypeName: MusicSignalReceiver, Assembly-CSharp
+          m_MethodName: PlayEvilMusicInstant
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &903282820
 GameObject:
   m_ObjectHideFlags: 0
@@ -6589,6 +6606,8 @@ PlayableDirector:
     value: {fileID: 735150803}
   - key: {fileID: -4169487449189195062, guid: 16a4bfc29676a514190a4007395012f5, type: 2}
     value: {fileID: 611770035}
+  - key: {fileID: -8242380994720182505, guid: 16a4bfc29676a514190a4007395012f5, type: 2}
+    value: {fileID: 875781042}
   m_ExposedReferences:
     m_References:
     - 24365a1cbaee48a4f89604a90d2004ae: {fileID: 611770033}
