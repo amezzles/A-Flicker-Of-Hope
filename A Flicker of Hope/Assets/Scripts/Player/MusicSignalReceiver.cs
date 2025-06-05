@@ -75,7 +75,9 @@ public class MusicSignalReceiver : MonoBehaviour
 
         musicSource.volume = 0f;
         musicSource.clip = newClip;
+        musicSource.loop = true;
         musicSource.Play();
+
 
         //fade in
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
